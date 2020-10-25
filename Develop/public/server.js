@@ -5,6 +5,9 @@ const path = require("path");
 const app = express();
 const PORT = 3000;
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 // Routes
 // ===========================================================
 app.get("/notes", function (req, res) {
@@ -12,16 +15,23 @@ app.get("/notes", function (req, res) {
 });
 
 app.get("/api/notes", function (req, res) {
-    res.json(db.json);
+    fs.readFile("../db/db.json", (err) => {
+        if (err) throw err;
+        res.end();
+    });
+    
 });
 
-app.post("/api/notes", function (req, res) {
-    res.json(yoda);
-});
+// app.post("/api/notes", function (req, res) {
+//     const noteData = req.body;
+//     console.log(noteData);
+//     fs.appendFile("../db/db.json", noteData);
+//     console.log(res);
+// });
 
-app.delete("/api/notes/:id", function (req, res) {
-    res.json(yoda);
-});
+// app.delete("/api/notes/:id", function (req, res) {
+//     res.json(yoda);
+// });
 
 app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "index.html"));
