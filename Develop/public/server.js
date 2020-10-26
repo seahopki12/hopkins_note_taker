@@ -15,19 +15,22 @@ app.get("/notes", function (req, res) {
 });
 
 app.get("/api/notes", function (req, res) {
-    fs.readFile("../db/db.json", (err) => {
+    fs.readFile("../db/db.json", function (err) {
         if (err) throw err;
-        res.end();
+        console.log(res.json());
+        return res.json();
     });
     
 });
 
-// app.post("/api/notes", function (req, res) {
-//     const noteData = req.body;
-//     console.log(noteData);
-//     fs.appendFile("../db/db.json", noteData);
-//     console.log(res);
-// });
+app.post("/api/notes", function (req, res) {
+    savedData = JSON.stringify(req.body);
+    fs.appendFile("../db/db.json", savedData, function (err) {
+        if (err) throw err;
+        res.json(savedData);
+    });
+    
+});
 
 // app.delete("/api/notes/:id", function (req, res) {
 //     res.json(yoda);
