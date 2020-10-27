@@ -7,6 +7,9 @@ const PORT = 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static('assets'));
+
+const noteList = [];
 
 // Routes
 // ===========================================================
@@ -14,20 +17,19 @@ app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "notes.html"));
 });
 
-app.get("/api/notes", function (req, res) {
-    fs.readFile("../db/db.json", function (err) {
-        if (err) throw err;
-        console.log(res.json());
-        return res.json();
-    });
-    
-});
+// app.get("/api/notes", function (req, res) {
+//     fs.readFile("../db/db.json", function (err, data) {
+//         if (err) throw err;
+//         console.log(JSON.parse(data));
+//     });
+// });
 
 app.post("/api/notes", function (req, res) {
     savedData = JSON.stringify(req.body);
-    fs.appendFile("../db/db.json", savedData, function (err) {
+    noteList.push(savedData);
+    fs.writeFile("../db/db.json", noteList, function (err) {
         if (err) throw err;
-        res.json(savedData);
+        res.end();
     });
     
 });
