@@ -20,15 +20,18 @@ app.get("/notes", function (req, res) {
 app.get("/api/notes", function (req, res) {
     fs.readFile("../db/db.json", function (err, data) {
         if (err) throw err;
-        return res.end(data);
+        returnedData = JSON.parse(data);
+        return res.send(returnedData);
     });
 });
 
 app.post("/api/notes", function (req, res) {
     
-    savedData = JSON.stringify(req.body);
-    noteList.push(savedData);
-    fs.writeFile("../db/db.json", noteList, function (err) {
+    // savedData = JSON.stringify(req.body);
+    // noteList.push(savedData);
+    noteList.push(req.body);
+    savedData = JSON.stringify(noteList);
+    fs.writeFile("../db/db.json", savedData, function (err) {
         if (err) throw err;
         res.end();
     });
