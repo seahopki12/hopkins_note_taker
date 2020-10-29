@@ -3,13 +3,14 @@ const express = require("express");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
+let PORT = process.env.PORT || 3001;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('assets'));
 
 const noteList = [];
+const noteIdArray= [];
 
 // Routes
 // ===========================================================
@@ -26,10 +27,8 @@ app.get("/api/notes", function (req, res) {
 });
 
 app.post("/api/notes", function (req, res) {
-    
-    // savedData = JSON.stringify(req.body);
-    // noteList.push(savedData);
     noteList.push(req.body);
+    noteIdArray.push(noteList.length);
     savedData = JSON.stringify(noteList);
     fs.writeFile("../db/db.json", savedData, function (err) {
         if (err) throw err;
@@ -37,9 +36,18 @@ app.post("/api/notes", function (req, res) {
     });
 });
 
-// app.delete("/api/notes/:id", function (req, res) {
-//     res.json(yoda);
-// });
+app.delete("/api/notes/:id", function (req, res) {
+    let chosen = req.params.id;
+    for (let i = 0; i < noteIdArray - 1; i ++) {
+        if (chosen === noteIdArray[i]) {
+            noteList.pop(noteIdArray[i])
+            res.end();
+        } else {
+            console.log ("ID does not exist!")
+            res.end();
+        }
+    }
+});
 
 app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "index.html"));
