@@ -7,7 +7,7 @@ let PORT = process.env.PORT || 3001;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('assets'));
+app.use(express.static('public'));
 
 const noteList = [];
 const noteIdArray= [];
@@ -15,11 +15,11 @@ const noteIdArray= [];
 // Routes
 // ===========================================================
 app.get("/notes", function (req, res) {
-    res.sendFile(path.join(__dirname, "notes.html"));
+    res.sendFile(path.join(__dirname, "public/notes.html"));
 });
 
 app.get("/api/notes", function (req, res) {
-    fs.readFile("../db/db.json", function (err, data) {
+    fs.readFile("db/db.json", function (err, data) {
         if (err) throw err;
         returnedData = JSON.parse(data);
         return res.send(returnedData);
@@ -30,7 +30,7 @@ app.post("/api/notes", function (req, res) {
     noteList.push(req.body);
     noteIdArray.push(noteList.length);
     savedData = JSON.stringify(noteList);
-    fs.writeFile("../db/db.json", savedData, function (err) {
+    fs.writeFile("db/db.json", savedData, function (err) {
         if (err) throw err;
         res.end();
     });
